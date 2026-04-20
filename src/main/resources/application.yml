@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: so-sync
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sosync
+    username: postgres
+    password: 12345
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
