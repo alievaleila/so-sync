@@ -1,22 +1,27 @@
 package com.example.entity;
 
 import com.example.enums.SosStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table
+@Table(name = "sos")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,12 +32,17 @@ public class Sos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private Double lat;
     private Double lng;
 
     @Enumerated(EnumType.STRING)
     private SosStatus status;
 
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 }
