@@ -5,5 +5,5 @@ import com.example.dto.SosResponseDto;
 
 public interface SosService {
 
-    SosResponseDto sendSos(SosRequestDto request);
+    SosResponseDto sendSos(SosRequestDto request, String email);
 }

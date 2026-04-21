@@ -7,13 +7,10 @@ import com.example.entity.User;
 import com.example.enums.SosStatus;
 import com.example.mapper.SosMapper;
 import com.example.repository.SosRepository;
+import com.example.repository.UserRepository;
 import com.example.service.SosService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -21,18 +18,18 @@ public class SosServiceImpl implements SosService {
 
     private final SosRepository sosRepository;
     private final SosMapper sosMapper;
+    private final UserRepository userRepository;
 
     @Override
-    public SosResponseDto sendSos(SosRequestDto request) {
-        Sos sos=sosMapper.toEntity(request);
+    public SosResponseDto sendSos(SosRequestDto request, String email) {
 
-        User user= new User();
-        user.setId(1L);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        Sos sos = sosMapper.toEntity(request);
 
         sos.setUser(user);
         sos.setStatus(SosStatus.PENDING);
 
-        Sos saved=sosRepository.save(sos);
+        Sos saved = sosRepository.save(sos);
 
         return sosMapper.toResponse(saved);
     }
