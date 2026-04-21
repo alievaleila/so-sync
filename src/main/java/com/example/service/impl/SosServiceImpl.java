@@ -1,8 +1,9 @@
 package com.example.service.impl;
 
-import com.example.dto.SosRequest;
-import com.example.dto.SosResponse;
+import com.example.dto.SosRequestDto;
+import com.example.dto.SosResponseDto;
 import com.example.entity.Sos;
+import com.example.entity.User;
 import com.example.enums.SosStatus;
 import com.example.mapper.SosMapper;
 import com.example.repository.SosRepository;
@@ -18,24 +19,20 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class SosServiceImpl implements SosService {
 
-    private static final String SOS_KEY_PREFIX = "sos:";
-
     private final SosRepository sosRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
     private final SosMapper sosMapper;
 
     @Override
-    public SosResponse sendSos(SosRequest request) {
+    public SosResponseDto sendSos(SosRequestDto request) {
+        Sos sos=sosMapper.toEntity(request);
 
-        Sos sos = sosMapper.toEntity(request);
+        User user= new User();
+        user.setId(1L);
+
+        sos.setUser(user);
         sos.setStatus(SosStatus.PENDING);
-        sos.setCreatedAt(LocalDateTime.now());
 
-        Sos saved = sosRepository.save(sos);
-
-        String key = SOS_KEY_PREFIX + saved.getUserId();
-
-        redisTemplate.opsForValue().set(key, "ACTIVE", Duration.ofMinutes(3));
+        Sos saved=sosRepository.save(sos);
 
         return sosMapper.toResponse(saved);
     }

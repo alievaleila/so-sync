@@ -1,8 +1,7 @@
 package com.example.controller;
 
-import com.example.dto.SosRequest;
-import com.example.dto.SosResponse;
-import com.example.service.SosService;
+import com.example.dto.SosRequestDto;
+import com.example.dto.SosResponseDto;
 import com.example.service.SosService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +20,9 @@ public class SosController {
     private final SosService sosService;
 
     @PostMapping("/send")
-    public ResponseEntity<SosResponse> sendSos(@Valid @RequestBody SosRequest request) {
+    public ResponseEntity<SosResponseDto> sendSos(@Valid @RequestBody SosRequestDto request) {
 
-        SosResponse response = sosService.sendSos(request);
+        SosResponseDto response = sosService.sendSos(request);
 
         return ResponseEntity.
                 status(HttpStatus.CREATED)

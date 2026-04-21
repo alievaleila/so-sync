@@ -1,9 +1,9 @@
 package com.example.service;
 
-import com.example.dto.SosRequest;
-import com.example.dto.SosResponse;
+import com.example.dto.SosRequestDto;
+import com.example.dto.SosResponseDto;
 
 public interface SosService {
 
-    SosResponse sendSos(SosRequest request);
+    SosResponseDto sendSos(SosRequestDto request);
 }

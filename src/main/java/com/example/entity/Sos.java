@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,8 +37,8 @@ public class Sos {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Double lat;
-    private Double lng;
+    private BigDecimal lat;
+    private BigDecimal lng;
 
     @Enumerated(EnumType.STRING)
     private SosStatus status;
