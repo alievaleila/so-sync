@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    private static final String SECRET = "your-secret-key-your-secret-key-your-secret-key";
+    private static final String SECRET = "bu_menim_cox_uzun_ve_tehlukesiz_secret_keyim_2026_leyla";
 
     public String generateToken(String email) {
         return Jwts.builder()
