@@ -37,7 +37,7 @@ public class SosController {
     }
 
     @PatchMapping("/{id}/resolve")
-    public ResponseEntity<SosResponseDto> resolve(@PathVariable Long id) {
-        return ResponseEntity.ok(sosService.resolveSos(id));
+    public ResponseEntity<SosResponseDto> resolve(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok(sosService.resolveSos(id, authentication.getName()));
     }
 }

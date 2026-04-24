@@ -1,6 +1,5 @@
 package com.example.service.impl;
 
-import com.example.dto.SosEventDto;
 import com.example.dto.SosRequestDto;
 import com.example.dto.SosResponseDto;
 import com.example.entity.Sos;
@@ -9,6 +8,7 @@ import com.example.enums.SosStatus;
 import com.example.mapper.SosMapper;
 import com.example.repository.SosRepository;
 import com.example.repository.UserRepository;
+import com.example.service.NotificationService;
 import com.example.service.SosService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +28,13 @@ public class SosServiceImpl implements SosService {
     private final SosRepository sosRepository;
     private final SosMapper sosMapper;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
     private final SimpMessagingTemplate messagingTemplate;
 
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
+    @Transactional
     public SosResponseDto sendSos(SosRequestDto request, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -42,8 +44,7 @@ public class SosServiceImpl implements SosService {
         sos.setStatus(SosStatus.PENDING);
         Sos saved = sosRepository.save(sos);
 
-        messagingTemplate.convertAndSend("/topic/sos/" + user.getId(),
-                new SosEventDto(user.getId(), saved.getLat(), saved.getLng(), "SOS ALERT!"));
+        notificationService.sendSosToContacts(user, saved);
 
         redisTemplate.opsForValue().set("sos_session:" + saved.getId(), "PENDING", Duration.ofMinutes(3));
 
@@ -52,14 +53,15 @@ public class SosServiceImpl implements SosService {
 
     @Override
     @Transactional
-    public SosResponseDto resolveSos(Long sosId) {
+    public SosResponseDto resolveSos(Long sosId, String currentEmail) {
         Sos sos = findSosOrThrow(sosId);
 
-        updateSosStatus(sos, SosStatus.RESOLVED);
+        if (!sos.getUser().getEmail().equals(currentEmail)) {
+            throw new RuntimeException("Siz bu SOS-u bağlaya bilməzsiniz!");
+        }
 
-        cancelRedisSession(sosId);
-
-        log.info("SOS session resolved successfully for ID: {}", sosId);
+        sos.setStatus(SosStatus.RESOLVED);
+        redisTemplate.delete("sos_session:" + sosId);
         return sosMapper.toResponse(sos);
     }
 

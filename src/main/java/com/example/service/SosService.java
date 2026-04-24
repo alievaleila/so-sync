@@ -7,5 +7,5 @@ public interface SosService {
 
     SosResponseDto sendSos(SosRequestDto request, String email);
 
-    SosResponseDto resolveSos(Long id);
+    SosResponseDto resolveSos(Long id, String currentEmail);
 }

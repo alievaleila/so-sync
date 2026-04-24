@@ -3,6 +3,7 @@ package com.example;
 import com.example.entity.User;
 import com.example.enums.Role;
 import com.example.repository.UserRepository;
+import com.example.service.EmailService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,6 +29,18 @@ public class SoSyncApplication {
                 user.setPassword(passwordEncoder.encode("password123"));
                 user.setRole(Role.ROLE_USER);
                 userRepository.save(user);
+            }
+        };
+    }
+
+    @Bean
+    CommandLineRunner testEmail(EmailService emailService) {
+        return args -> {
+            try {
+                emailService.sendEmergencyEmail("lleilalieva@gmail.com", "Test", "Sistem ishleyir!");
+                System.out.println("✅ Test emaili gonderildi!");
+            } catch (Exception e) {
+                System.out.println("❌ Email xetasi: " + e.getMessage());
             }
         };
     }
