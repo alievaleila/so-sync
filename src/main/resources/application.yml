@@ -20,7 +20,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: lleilalieva@gmail.com
-    password: finm jdif igza emny
+    password:
     properties:
       mail:
         transport:
